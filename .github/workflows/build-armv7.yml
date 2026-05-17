@@ -1,0 +1,28 @@
+name: Build for Android ARMv7 (Termux)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: armv7-linux-androideabi
+
+      - name: Install Cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+
+      - name: Build binary for Termux
+        run: cross build --release --target armv7-linux-androideabi
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-jumper-armv7
+          path: target/armv7-linux-androideabi/release/yggdrasil-jumper
